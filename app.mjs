@@ -1,37 +1,32 @@
 import express from 'express'
-import path from 'path';
-// import { dirname } from 'node:path';
-// import { fileURLToPath } from 'node:url';
+import path from 'path'
+
 
 const app = express()
-const PORT = process.env.PORT || 3000; 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = dirname(__filename);
+const PORT = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, 'public')))
+const path = require('path');
 
-// app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
-
-
-// app.use(express.static(__dirname + 'public'));
-
+app.use(express.static(__dirname + 'public'))
 
 app.get('/', (req, res) => {
-  res.send('Hello Express from Render 😍😍😍. <a href="barry">barry</a>')
+  res.send('Hello World')
 })
-
-// endpoints...middlewares...apis? 
-// send an html file
 
 app.get('/connor', (req, res) => {
-  // res.send('barry. <a href="/">home</a>')
-
-  res.sendFile('connor.html'); 
-
+  res.send('connor. <a href="/">home</a>')
+  res.sendFile('connor.html')
+  
 })
 
+app.get('/api/connor', (req, res) => {
+    //res.send('connor, <a href="/">home</a>')
+    const myVar = 'Hello from server!';
+    res.json({ myVar });
 
+    //res.sendFile('connor.html')
+  })
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`)
-})
+  app.listen(PORT, () => {
+    console.log(`Example app listening on ${PORT}`)
+  })
