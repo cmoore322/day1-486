@@ -75,10 +75,11 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.mjs"
+    "dev": "nodemon app.mjs",
+    "start": "node app.mjs"
   },
   "keywords": [],
-  "author": "",
+  "author": "cmoore322",
   "license": "ISC",
-  "description": ""
+  "description": "Connor Blog SPA - demo of CRUD with Node/Express/MongoDB"
 }
