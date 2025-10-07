@@ -27,15 +27,19 @@ const client = new MongoClient(uri, {
 });
 
 let postsCollection = null;
-async function initDb() {
-  if (!uri) return;
-  await client.connect();
-  const dbName = process.env.MONGODB_DBNAME || 'blog';
+const dbName = process.env.MONGODB_DBNAME || 'blog';
+if (uri) {
+  // create collection handle - operations will connect lazily
   const db = client.db(dbName);
   postsCollection = db.collection('posts');
-  console.log(`Connected to MongoDB (${dbName})`);
+  // start a non-blocking background connection attempt so logs show status,
+  // but do not await it to avoid blocking platform startup when network
+  client.connect()
+    .then(() => console.log(`Connected to MongoDB (${dbName})`))
+    .catch(err => console.warn('Mongo background connect failed:', err.message));
+} else {
+  console.warn('MONGODB_URI not set; DB operations will fail until it is configured.');
 }
-initDb().catch(err => console.error('DB init error:', err));
 
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'public', 'index.html'))
