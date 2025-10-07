@@ -1,7 +1,7 @@
 {
-  "name": "stunning-octo-fortnight-hello-express",
+  "name": "day1-486",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "app.mjs",
   "dependencies": {
     "accepts": "^2.0.0",
     "body-parser": "^2.2.0",
