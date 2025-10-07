@@ -18,27 +18,32 @@ app.use(express.json());
 const uri = process.env.MONGODB_URI || '';
 if (!uri) console.warn('MONGODB_URI is not set — the app will start but DB operations will fail until it is configured.');
 
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
+let client = null;
 let postsCollection = null;
 const dbName = process.env.MONGODB_DBNAME || 'blog';
-if (uri) {
+
+// Only construct MongoClient if URI looks valid to avoid throwing on startup
+const normalizedUri = (uri || '').trim();
+if (normalizedUri && (normalizedUri.startsWith('mongodb://') || normalizedUri.startsWith('mongodb+srv://'))) {
+  client = new MongoClient(normalizedUri, {
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    }
+  });
+
   // create collection handle - operations will connect lazily
   const db = client.db(dbName);
   postsCollection = db.collection('posts');
+
   // start a non-blocking background connection attempt so logs show status,
   // but do not await it to avoid blocking platform startup when network
   client.connect()
     .then(() => console.log(`Connected to MongoDB (${dbName})`))
     .catch(err => console.warn('Mongo background connect failed:', err.message));
 } else {
-  console.warn('MONGODB_URI not set; DB operations will fail until it is configured.');
+  console.warn('MONGODB_URI missing or invalid; skipping MongoClient construction. DB operations will return 500 until configured.');
 }
 
 app.get('/', (req, res) => {
